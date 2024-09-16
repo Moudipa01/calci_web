@@ -1,5 +1,6 @@
 import { useState } from "react";
-import "@/app/globals.css"
+import { useRouter } from 'next/router';
+import "@/app/globals.css";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,17 +10,37 @@ import { Slider } from "@/components/ui/slider";
 import { FaCar, FaMotorcycle } from "react-icons/fa";
 import Footer from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
-import Link from 'next/link';
-
 
 export default function Calci() {
     const [vehicleType, setVehicleType] = useState<"car" | "bike">("car");
-
     const [fuelPrice, setFuelPrice] = useState(50);
     const [mileage, setMileage] = useState(15);
     const [range, setRange] = useState(250);
     const [batteryCapacity, setBatteryCapacity] = useState(40);
     const [chargingCost, setChargingCost] = useState(10);
+    const [journeyDistance, setJourneyDistance] = useState(1);
+    const [journeyFreq, setJourneyFreq] = useState("daily");
+    const [selectedState, setSelectedState] = useState("");
+
+    const router = useRouter();
+
+    const stateArr = ["Andaman & Nicobar", "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chandigarh", "Chhattisgarh", "Dadra & Nagar Haveli", "Daman & Diu", "Delhi", "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jammu & Kashmir", "Jharkhand", "Karnataka", "Kerala", "Lakshadweep", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Puducherry", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal"];
+
+    const handleCalculate = () => {
+        const queryParams = new URLSearchParams({
+            vehicleType,
+            fuelPrice: fuelPrice.toString(),
+            mileage: mileage.toString(),
+            range: range.toString(),
+            batteryCapacity: batteryCapacity.toString(),
+            chargingCost: chargingCost.toString(),
+            journeyDistance: journeyDistance.toString(),
+            journeyFreq,
+            state: selectedState
+        }).toString();
+
+        router.push(`/Cost?${queryParams}`);
+    };
 
     return (
         <>
@@ -66,15 +87,15 @@ export default function Calci() {
                                 </div>
                                 <div>
                                     <Label htmlFor="state">State</Label>
-                                    <Select id="state">
+                                    <Select id="state" onValueChange={(value) => setSelectedState(value)}>
                                         <SelectTrigger>
                                             <SelectValue placeholder="Select State" />
                                         </SelectTrigger>
                                         <SelectContent>
                                             <SelectGroup>
-                                                <SelectItem value="state1">State 1</SelectItem>
-                                                <SelectItem value="state2">State 2</SelectItem>
-                                                <SelectItem value="state3">State 3</SelectItem>
+                                                {stateArr.map((state, index) => (
+                                                    <SelectItem key={index} value={state}>{state}</SelectItem>
+                                                ))}
                                             </SelectGroup>
                                         </SelectContent>
                                     </Select>
@@ -107,7 +128,7 @@ export default function Calci() {
                                 </div>
                                 <div>
                                     <Label htmlFor="journeyFreq">Journey Frequency</Label>
-                                    <Select id="journeyFreq">
+                                    <Select id="journeyFreq" onValueChange={(value) => setJourneyFreq(value)}>
                                         <SelectTrigger>
                                             <SelectValue placeholder="Daily" />
                                         </SelectTrigger>
@@ -122,7 +143,7 @@ export default function Calci() {
                                 </div>
                                 <div>
                                     <Label htmlFor="journeyDistance">Journey Distance (Km)</Label>
-                                    <Input id="journeyDistance" type="number" defaultValue={1} />
+                                    <Input id="journeyDistance" type="number" defaultValue={1} onChange={(e) => setJourneyDistance(Number(e.target.value))} />
                                 </div>
                                 <div>
                                     <Label htmlFor="chargingCost">Charging Cost: ₹{chargingCost}</Label>
@@ -132,13 +153,8 @@ export default function Calci() {
                         </CardContent>
                     </Card>
                 </div>
-                <div className="className=text-center mt-6">
-                    <Link href="/Cost">
-                        <div className="flex justify-center">
-                            <Button className="w-full md:w-1/3">Calculate Total Cost</Button>
-                        </div>
-
-                    </Link>
+                <div className="flex justify-center mt-6">
+                    <Button onClick={handleCalculate} className="w-full md:w-1/3">Calculate Total Cost</Button>
                 </div>
             </div>
             <Footer />

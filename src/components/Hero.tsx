@@ -2,11 +2,12 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from "./ui/button";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaMapMarkerAlt, FaThLarge, FaCalendarAlt } from "react-icons/fa";
 import { RiMotorbikeFill } from "react-icons/ri";
 import { FaArrowRightLong } from "react-icons/fa6";
 import AirportShuttleIcon from '@mui/icons-material/AirportShuttle';
+import axios from 'axios';
 
 import {
   Select,
@@ -28,6 +29,31 @@ const catArr = ["E-2 Wheelers", "E-3 Wheelers", "E-Bus", "E-4 Wheelers (Personal
 const yearArr = ["FY 2024-23","FY 2023-22","FY 2022-21","FY 2021-20","FY 2020-19","FY 2018-17","FY 2017-16","FY 2016-15"];
 
 export const Hero = () => {
+  const [selectedState, setSelectedState] = useState<string>(stateArr[0]);
+  const [selectedCategory, setSelectedCategory] = useState<string>(catArr[0]);
+  const [selectedYear, setSelectedYear] = useState<string>(yearArr[0]);
+  const [currentData, setCurrentData] = useState<{ currentFY: string; previousMonth: string; evVolumes: string } | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        console.log('Fetching data with:', { selectedState, selectedCategory, selectedYear });
+        const response = await axios.get('http://localhost:3001/api/data', {
+          params: {
+            state: selectedState,
+            category: selectedCategory,
+            year: selectedYear,
+          },
+        });
+        console.log('Received data:', response.data); 
+        setCurrentData(response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, [selectedState, selectedCategory, selectedYear]);
+
   return (
     <section className="container grid place-items-center py-20 md:py-32 gap-10">
       <div className="shadow"></div>
@@ -42,7 +68,7 @@ export const Hero = () => {
         </p>
 
         <div className="flex justify-center space-x-4">
-          <Select>
+          <Select onValueChange={setSelectedState}>
             <SelectTrigger className="w-[220px] bg-black text-white flex items-center justify-center">
               <FaMapMarkerAlt className="mr-2" />
               <SelectValue placeholder="States" />
@@ -56,7 +82,7 @@ export const Hero = () => {
               </SelectGroup>
             </SelectContent>
           </Select>
-          <Select>
+          <Select onValueChange={setSelectedCategory}>
             <SelectTrigger className="w-[220px] bg-black text-white flex items-center justify-center">
               <FaThLarge className="mr-2" />
               <SelectValue placeholder="Category" />
@@ -64,14 +90,14 @@ export const Hero = () => {
             <SelectContent>
               <SelectGroup>
                 <SelectLabel>Categories</SelectLabel>
-                {catArr.map((state, index) => (
-                  <SelectItem key={index} value={state}>{state}</SelectItem>
+                {catArr.map((category, index) => (
+                  <SelectItem key={index} value={category}>{category}</SelectItem>
                 ))}
               </SelectGroup>
             </SelectContent>
           </Select>
 
-          <Select>
+          <Select onValueChange={setSelectedYear}>
             <SelectTrigger className="w-[220px] bg-black text-white flex items-center justify-center">
               <FaCalendarAlt className="mr-2" />
               <SelectValue placeholder="Year" />
@@ -79,8 +105,8 @@ export const Hero = () => {
             <SelectContent>
               <SelectGroup>
                 <SelectLabel>Years</SelectLabel>
-                {yearArr.map((state, index) => (
-                  <SelectItem key={index} value={state}>{state}</SelectItem>
+                {yearArr.map((year, index) => (
+                  <SelectItem key={index} value={year}>{year}</SelectItem>
                 ))}
               </SelectGroup>
             </SelectContent>
@@ -90,14 +116,14 @@ export const Hero = () => {
           <Card className="rounded-lg bg-gray-200" style={{ width: '277px', height: '219px' }}>
             <CardContent className="p-6">
               <div className="text-base font-semibold">Total EV Volumes (Current FY)</div>
-              <div className="text-4xl font-bold mt-2">0.56M</div>
+              <div className="text-4xl font-bold mt-2">{currentData?.currentFY || "Loading..."}</div>
             </CardContent>
           </Card>
 
           <Card className="rounded-lg bg-gray-200" style={{ width: '277px', height: '219px' }}>
             <CardContent className="p-6">
-              <div className="text-base font-semibold">Total Volumes (previous Month)</div>
-              <div className="text-4xl font-bold mt-2">80.88K</div>
+              <div className="text-base font-semibold">Total Volumes (Previous Month)</div>
+              <div className="text-4xl font-bold mt-2">{currentData?.previousMonth || "Loading..."}</div>
             </CardContent>
           </Card>
 
@@ -111,7 +137,7 @@ export const Hero = () => {
                       <RiMotorbikeFill />
                     </div>
                     <div className="text-sm font-medium">E-2W</div>
-                    <div className="text-lg font-semibold">0.28M</div>
+                    <div className="text-lg font-semibold">{currentData?.evVolumes || "Loading..."}</div>
                   </div>
                   <div className="border-l border-gray-700"></div>
                   <div className="flex-1 text-center p-4">
@@ -125,7 +151,7 @@ export const Hero = () => {
               </div>
             </CardContent>
           </Card>
-        </div >
+        </div>
         <Linechart />
         <div className="flex justify-center items-center min-h-screen space-x-9">
           <Barchart />
