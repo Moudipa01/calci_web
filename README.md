@@ -54,6 +54,3 @@ To set up this project locally, follow these steps:
  ```bash
    http://localhost:3000
 
-
-   
-
