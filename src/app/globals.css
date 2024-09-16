@@ -1,0 +1,66 @@
+@tailwind base;
+  @tailwind components;
+  @tailwind utilities;
+
+  @layer base {
+    :root {
+      --foreground: 240 10% 3.9%;
+      --card: 0 0% 100%; 
+      --card-foreground: 240 10% 3.9%;
+      --popover: 0 0% 100%; 
+      --popover-foreground: 240 10% 3.9%;
+      --primary: 171 100% 53%; /* Updated button color #00D8CB */
+      --primary-foreground: 240 10% 100%;
+      --secondary: 240 6% 93%;
+      --secondary-foreground: 240 10% 10%;
+      --muted: 240 4.8% 95.9%;
+      --muted-foreground: 240 3.8% 46.1%;
+      --accent: 240 4.8% 95.9%;
+      --accent-foreground: 240 5.9% 10%;
+      --destructive: 0 84.2% 60.2%;
+      --destructive-foreground: 0 0% 98%;
+      --border: 240 5.9% 90%;
+      --input: 240 5.9% 90%;
+      --ring: 164 72% 42%;
+      --radius: 0.5rem;
+      --chart-1: 221.2 83.2% 53.3%;
+      --chart-2: 212 95% 68%;
+      --chart-3: 216 92% 60%;
+      --chart-4: 210 98% 78%;
+      --chart-5: 212 97% 87%;
+    }
+  
+    .dark {
+      --background: 240 10% 13%; /* Dark gray background */
+      --foreground: 0 0% 95%; /* Light text */
+      --card: 24 9.8% 10%; /* Dark card */
+      --card-foreground: 0 0% 95%; /* Light text on card */
+      --popover: 0 0% 9%; /* Dark popover */
+      --popover-foreground: 0 0% 95%; /* Light text on popover */
+      --primary: 171 100% 53%; /* Updated button color #00D8CB */
+      --primary-foreground: 240 10% 100%; /* White text on primary */
+      --secondary: 240 3.7% 15.9%; /* Dark blue-gray secondary color */
+      --secondary-foreground: 0 0% 98%; /* Light text on secondary */
+      --muted: 0 0% 15%; /* Muted background color */
+      --muted-foreground: 240 5% 64.9%; /* Muted text color */
+      --accent: 12 6.5% 15.1%; /* Accent color */
+      --accent-foreground: 0 0% 98%; /* Light text on accent */
+      --destructive: 0 62.8% 30.6%; /* Red for destructive actions */
+      --destructive-foreground: 0 85.7% 97.3%; /* Light text on destructive */
+      --border: 240 3.7% 15.9%; /* Border color */
+      --input: 240 3.7% 15.9%; /* Input background */
+      --ring: 164 72% 42%; /* Green ring color */
+    }
+  }
+  
+  
+  @layer base {
+    * {
+      @apply border-border;
+    }
+    body {
+      @apply bg-background text-foreground;
+    }
+  }
+  
+  
